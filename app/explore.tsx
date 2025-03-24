@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 
 const eventosFicticios = [
   {
@@ -37,7 +38,7 @@ export default function ExploreEventos() {
     <LinearGradient colors={['#1A1A40', '#2D2D7A']} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.tituloPrincipal}>Eventos em Destaque</Text>
-        
+
         {/* Barra de Pesquisa */}
         <View style={styles.barraPesquisa}>
           <Ionicons name="search" size={24} color="#6C63FF" />
@@ -48,32 +49,38 @@ export default function ExploreEventos() {
         {eventosFicticios.map((evento) => (
           <TouchableOpacity key={evento.id} style={styles.cardEvento}>
             <Image source={evento.imagem} style={styles.imagemEvento} />
-            
+
             <View style={styles.infoContainer}>
               <LinearGradient
                 colors={['#6C63FF', '#4A47FF']}
                 style={styles.categoriaTag}>
                 <Text style={styles.textoCategoria}>{evento.categoria}</Text>
               </LinearGradient>
-              
+
               <Text style={styles.tituloEvento}>{evento.titulo}</Text>
-              
+
               <View style={styles.detalhesContainer}>
                 <Ionicons name="calendar" size={16} color="#6C63FF" />
                 <Text style={styles.textoDetalhe}>{evento.data}</Text>
               </View>
-              
+
               <View style={styles.detalhesContainer}>
                 <Ionicons name="location" size={16} color="#6C63FF" />
                 <Text style={styles.textoDetalhe}>{evento.local}</Text>
               </View>
-              
+
               <Text style={styles.descricaoEvento}>{evento.descricao}</Text>
-              
+              <Link
+              href={{ pathname: '/eventos/[id]', params: { id: String(evento.id) } }}
+              asChild
+            >
               <TouchableOpacity style={styles.botaoSaibaMais}>
                 <Text style={styles.textoBotao}>Saiba Mais</Text>
                 <Ionicons name="arrow-forward" size={20} color="#6C63FF" />
               </TouchableOpacity>
+            </Link>
+
+
             </View>
           </TouchableOpacity>
         ))}

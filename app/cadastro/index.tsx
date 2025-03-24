@@ -1,30 +1,52 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import * as DocumentPicker from 'expo-document-picker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { useRouter } from 'expo-router';
 
 export default function CadastroEvento() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     nome: '',
-    dataHora: '',
+    dataHora: new Date(),
     localizacao: '',
     descricao: '',
     responsavel: '',
     documento: null
   });
 
- 
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleConfirmDate = (selectedDate: Date) => {
+    setShowDatePicker(false);
+    setForm({ ...form, dataHora: selectedDate });
+  };
 
   const handleCadastro = () => {
-    console.log(form);
+    console.log('📦 Dados enviados:', form);
+    Alert.alert('Evento enviado!', 'Redirecionando para tela de sucesso...');
+
+    setTimeout(() => {
+      router.push('/cadastro/sucesso');
+    }, 1000); // delay pequeno só pra ver o alert (opcional)
   };
 
   return (
     <LinearGradient colors={['#1A1A40', '#2D2D7A']} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Cadastrar Novo Evento</Text>
-        
+
+        {/* Nome do Evento */}
         <View style={styles.inputContainer}>
           <Ionicons name="pricetag" size={20} color="#6C63FF" style={styles.icon} />
           <TextInput
@@ -32,21 +54,38 @@ export default function CadastroEvento() {
             placeholder="Nome do evento"
             placeholderTextColor="#999"
             value={form.nome}
-            onChangeText={text => setForm({...form, nome: text})}
+            onChangeText={(text) => setForm({ ...form, nome: text })}
           />
         </View>
 
+        {/* Data/Hora */}
         <View style={styles.inputContainer}>
           <Ionicons name="calendar" size={20} color="#6C63FF" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="DD/MM/AAAA HH:mm"
-            placeholderTextColor="#999"
-            value={form.dataHora}
-            onChangeText={text => setForm({...form, dataHora: text})}
-          />
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
+            style={{ flex: 1 }}>
+            <Text style={styles.dateText}>
+              {form.dataHora.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </Text>
+          </TouchableOpacity>
         </View>
 
+        <DateTimePickerModal
+          isVisible={showDatePicker}
+          mode="datetime"
+          date={form.dataHora}
+          onConfirm={handleConfirmDate}
+          onCancel={() => setShowDatePicker(false)}
+          locale="pt_BR"
+        />
+
+        {/* Local */}
         <View style={styles.inputContainer}>
           <Ionicons name="location" size={20} color="#6C63FF" style={styles.icon} />
           <TextInput
@@ -54,10 +93,11 @@ export default function CadastroEvento() {
             placeholder="Local do evento"
             placeholderTextColor="#999"
             value={form.localizacao}
-            onChangeText={text => setForm({...form, localizacao: text})}
+            onChangeText={(text) => setForm({ ...form, localizacao: text })}
           />
         </View>
 
+        {/* Descrição */}
         <View style={styles.inputContainer}>
           <Ionicons name="document-text" size={20} color="#6C63FF" style={styles.icon} />
           <TextInput
@@ -67,10 +107,11 @@ export default function CadastroEvento() {
             multiline
             numberOfLines={4}
             value={form.descricao}
- 
+            onChangeText={(text) => setForm({ ...form, descricao: text })}
           />
         </View>
 
+        {/* Responsável */}
         <View style={styles.inputContainer}>
           <Ionicons name="person" size={20} color="#6C63FF" style={styles.icon} />
           <TextInput
@@ -78,12 +119,11 @@ export default function CadastroEvento() {
             placeholder="Responsável (contato)"
             placeholderTextColor="#999"
             value={form.responsavel}
-            onChangeText={text => setForm({...form, responsavel: text})}
+            onChangeText={(text) => setForm({ ...form, responsavel: text })}
           />
         </View>
 
-  
-
+        {/* Botão de Publicar */}
         <TouchableOpacity style={styles.button} onPress={handleCadastro}>
           <LinearGradient
             colors={['#6C63FF', '#4A47FF']}
@@ -130,22 +170,15 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     fontFamily: 'Poppins_400Regular',
   },
+  dateText: {
+    color: 'white',
+    fontSize: 16,
+    paddingVertical: 18,
+    fontFamily: 'Poppins_400Regular',
+  },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
-  },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(108,99,255,0.2)',
-    borderRadius: 12,
-    padding: 18,
-    marginVertical: 10,
-  },
-  uploadText: {
-    color: '#6C63FF',
-    marginLeft: 10,
-    fontFamily: 'Poppins_500Medium',
   },
   button: {
     borderRadius: 14,

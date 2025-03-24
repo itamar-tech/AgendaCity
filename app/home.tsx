@@ -1,38 +1,34 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <LinearGradient
       colors={['#1A1A40', '#2D2D7A', '#4A4AC4']}
       style={styles.container}>
-      <Image 
-        source={require('../assets/logo.png')} 
-        style={styles.logo} 
-      />
       
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+
       <Text style={styles.title}>AgendaCity</Text>
       <Text style={styles.subtitle}>Encontre os melhores eventos da sua cidade</Text>
 
       <View style={styles.buttonContainer}>
         <Link href="/cadastro" asChild>
           <TouchableOpacity style={styles.button}>
-            <LinearGradient
-              colors={['#6C63FF', '#4A47FF']}
-              style={styles.gradientButton}>
+            <LinearGradient colors={['#6C63FF', '#4A47FF']} style={styles.gradientButton}>
               <Ionicons name="add-circle" size={24} color="white" />
               <Text style={styles.buttonText}>Cadastrar Evento</Text>
             </LinearGradient>
           </TouchableOpacity>
         </Link>
-        
+
         <Link href="/explore" asChild>
           <TouchableOpacity style={styles.button}>
-            <LinearGradient
-              colors={['#FF6B6B', '#FF4757']}
-              style={styles.gradientButton}>
+            <LinearGradient colors={['#FF6B6B', '#FF4757']} style={styles.gradientButton}>
               <Ionicons name="search" size={24} color="white" />
               <Text style={styles.buttonText}>Explorar Eventos</Text>
             </LinearGradient>
@@ -45,6 +41,14 @@ export default function Home() {
         <Ionicons name="logo-instagram" size={24} color="rgba(255,255,255,0.7)" style={styles.socialIcon} />
         <Ionicons name="logo-twitter" size={24} color="rgba(255,255,255,0.7)" />
       </View>
+      <Link href={{ pathname: '/relatorio' }} asChild>
+    <TouchableOpacity style={styles.adminButton}>
+        <Ionicons name="stats-chart" size={28} color="white" />
+      </TouchableOpacity>
+    </Link>
+
+
+
     </LinearGradient>
   );
 }
@@ -119,5 +123,13 @@ const styles = StyleSheet.create({
   },
   socialIcon: {
     marginHorizontal: 20,
+  },
+  adminButton: {
+    position: 'absolute',
+    bottom: 35,
+    right: 25,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    padding: 12,
+    borderRadius: 50,
   },
 });
